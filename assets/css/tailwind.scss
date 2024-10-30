@@ -1,0 +1,91 @@
+
+
+.light {
+  background-color: #eef5ff;
+}
+
+html {
+  font-family: 'Gilroy';
+}
+
+h1 {
+  @apply leading-[48px] font-semibold;
+}
+
+h2 {
+  @apply leading-[48px] font-semibold;
+}
+
+h3 {
+  @apply leading-10 font-semibold;
+}
+
+h4 {
+  @apply leading-8 font-semibold;
+}
+
+h5 {
+  @apply leading-7 font-semibold;
+}
+
+h6 {
+  @apply leading-6 font-semibold;
+}
+
+p {
+  @apply leading-6 text-stone-500 text-base;
+}
+
+.scrollCust {
+  &::-webkit-scrollbar-button {
+    background-repeat: no-repeat;
+    width: 5px;
+    height: 0;
+  }
+
+  &::-webkit-scrollbar-track {
+    background-color: transparent;
+    border-radius: 50px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    border-radius: 5px;
+    background-color: #8e9ac7;
+  }
+
+  &::-webkit-resizer {
+    background-repeat: no-repeat;
+    width: 5px;
+    height: 0;
+  }
+
+  &::-webkit-scrollbar {
+    width: 0;
+  }
+
+  &::-webkit-scrollbar-button {
+    background-repeat: no-repeat;
+    width: 5px;
+    height: 0;
+  }
+
+  &::-webkit-scrollbar-track {
+    //background-color: #e7e7e7;
+    border-radius: 50px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    border-radius: 5px;
+    background-color: #8e9ac7;
+  }
+
+  &::-webkit-resizer {
+    background-repeat: no-repeat;
+    width: 7px;
+    height: 0;
+  }
+
+  &::-webkit-scrollbar {
+    width: 5px !important;
+  }
+}

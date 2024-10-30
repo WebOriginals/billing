@@ -1,0 +1,81 @@
+# GitLab CI/CD v2
+
+workflow:
+  rules:
+    - if: $CI_COMMIT_REF_NAME == "development"
+      variables:
+        ENVIRONMENT_NAME: development
+
+    - if: $CI_COMMIT_REF_NAME =~ "(dev-ci|release)"
+      variables:
+        ENVIRONMENT_NAME: production
+
+stages:
+  - test
+  - release
+  - deploy
+
+variables:
+  FF_SCRIPT_SECTIONS: 1
+  CONTAINER_TAG: ${CI_COMMIT_REF_SLUG}-${CI_COMMIT_SHORT_SHA}
+
+release:
+  stage: release
+  image:
+    name: gcr.io/kaniko-project/executor:v1.20.0-debug
+    entrypoint: ['']
+  interruptible: true
+  script:
+    - mkdir -p /kaniko/.docker
+    - >
+      echo "{\"auths\":{\"${CI_REGISTRY}\":{\"auth\":\"$(echo -n ${CI_REGISTRY_USER}:${CI_REGISTRY_PASSWORD} |
+      base64)\"}}}" > /kaniko/.docker/config.json
+    - >
+      /kaniko/executor
+      --cache=true
+      --cache-copy-layers=true
+      --cache-ttl=3h
+      --context=${CI_PROJECT_DIR}
+      --dockerfile ${CI_PROJECT_DIR}/Dockerfile
+      --destination ${CI_REGISTRY_IMAGE}:${CONTAINER_TAG}
+      --destination ${CI_REGISTRY_IMAGE}:latest
+    - echo "Build release success"
+  environment:
+    name: ${ENVIRONMENT_NAME}
+  rules:
+    - if: $ENVIRONMENT_NAME == "production"
+
+.deploy:
+  image: argoproj/argocd:v2.5.7
+  stage: deploy
+  script:
+    - export ARGOCD_SERVER=argocd.keepcode.org
+    - export ARGOCD_AUTH_TOKEN=${ARGOCD_TOKEN}
+    - export ARGOCD_OPTS="--grpc-web"
+    - argocd app set ${APP}-${NAMESPACE} -p "image.tag=${CONTAINER_TAG}" --values "${NAMESPACE}.values.yaml"
+    - argocd app sync ${APP}-${NAMESPACE} --force || true
+
+deploy_test:
+  image: kroniak/ssh-client
+  stage: deploy
+  script:
+    - mkdir -p ~/.ssh
+    - chmod 700 ~/.ssh
+    - echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config
+    - echo "${SSH_PRIVATE_KEY_TEST_SERVER}" > ~/.ssh/id_rsa
+    - chmod 600 ~/.ssh/id_rsa
+    - ssh "${TEST_SERVER_HOST}" 'bash -s' < ./deploy.sh
+  environment:
+    name: 'test_server'
+  rules:
+    - if: $ENVIRONMENT_NAME == "development"
+
+deploy-prod:
+  extends: .deploy
+  variables:
+    NAMESPACE: production
+    APP: pvaboom-front
+  environment:
+    name: production
+  rules:
+    - if: $ENVIRONMENT_NAME == "production"
