@@ -1,7 +1,7 @@
 <template>
   <div class="wrapper" :class="{ lock: lockScrollValue }">
     <!-- Header   -->
-    <main class="page" :class="{ pb150: !storeUser?.getIsLoggedIn }">
+    <main class="page" >
       <slot></slot>
     </main>
     <!-- Footer -->
@@ -17,39 +17,8 @@ const head = useLocaleHead({
   addDirAttribute: true,
   addSeoAttributes: true,
 });
-useHead({
-  htmlAttrs: {
-    lang: head.value.htmlAttrs.lang,
-    dir: head.value.htmlAttrs.dir,
-  },
-  meta: [
-    { name: 'yandex-verification', content: import.meta.env.VITE_YANDEX_METRIKA },
-    { name: 'google-site-verification', content: import.meta.env.VITE_GOOGLE_METRIKA },
-    { name: 'cryptomus', content: import.meta.env.VITE_CRYPTOMUS },
-  ],
-  noscript: [
-    {
-      children:
-        '',
-      body: true,
-    },
-  ],
-  script: [
-    {
-      src: `https://www.googletagmanager.com/gtag/js?id=${import.meta.env.VITE_ID_GOOGLE_TAG}`,
-      tagPosition: 'head',
-    },
-    {
-      src: '/js/googleMetrika.js',
-      tagPosition: 'head',
-    },
-    {
-      src: '/js/yandexMetrika.js',
-      tagPosition: 'head',
-    },
-  ],
-});
-const storeUser = useUserStore();
+
+
 const lockScrollValue = ref(false);
 const lockScroll = (value) => {
   lockScrollValue.value = value.value;

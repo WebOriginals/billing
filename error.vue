@@ -6,12 +6,12 @@
           <div class="not-found__image">
 
           </div>
-          <div class="not-found__title">{{ $t('NotFoundPage.title') }}</div>
+          <div class="not-found__title">заголовок</div>
           <div class="not-found__info">
-            {{ $t('NotFoundPage.info') }}
+            описание
           </div>
           <div class="not-found__links">
-            <NuxtLink to="/" class="not-found__link">{{ $t('NotFoundPage.link') }}</NuxtLink>
+            <NuxtLink to="/" class="not-found__link"> ссылка перехода</NuxtLink>
           </div>
         </div>
       </div>
