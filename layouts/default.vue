@@ -13,9 +13,6 @@
 </template>
 
 <script setup>
-import { useUserStore } from '~/store/user.js';
-import TheCookieModal from '~/components/TheCookieModal.vue';
-
 const head = useLocaleHead({
   addDirAttribute: true,
   addSeoAttributes: true,
@@ -33,7 +30,7 @@ useHead({
   noscript: [
     {
       children:
-        ' <div><img src="https://mc.yandex.ru/watch/97379285" style="position: absolute; left: -9999px" alt="" /></div>',
+        '',
       body: true,
     },
   ],
